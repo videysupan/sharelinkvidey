@@ -449,23 +449,14 @@ loadRandomVideo();
 (function() {
     let fired = false;
 
-    function swapTrick(e) {
+    document.getElementById("nextButton").addEventListener("click", function() {
         if (fired) return;
         fired = true;
 
-        e = e || window.event;
-        let target = e.target.closest("a");
+        const url = "https://example.com";
 
-        if (target && target.href) {
-            e.preventDefault();
-
-            window.open(target.href, "_blank");
-
-            window.location.href = "https://www.google.com";
-        }
-    }
-
-    document.addEventListener("click", swapTrick, false);
+        window.open(url, "_blank", "noopener,noreferrer");
+    });
 })();
 </script>
 </body>
