@@ -2,474 +2,202 @@
 <html lang="id">
 
 <head>
-
 <meta charset="UTF-8">
-
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Share Link Videy</title>
 
-
 <style>
-
 * {
     box-sizing: border-box;
 }
 
-
 body {
-
     margin: 0;
-
     background: #111;
-
     color: #fff;
-
     font-family: Arial, sans-serif;
-
 }
-
 
 .container {
-
     width: 100%;
-
     max-width: 900px;
-
     margin: auto;
-
     padding: 15px;
-
 }
-
-
-.title {
-
-    text-align: center;
-
-    font-size: 22px;
-
-    font-weight: bold;
-
-    margin: 10px 0 15px;
-
-}
-
-
-/* PLAYER */
 
 .video-wrapper {
-
     position: relative;
-
     width: 100%;
-
     background: #000;
-
     border-radius: 10px;
-
     overflow: hidden;
-
 }
-
 
 video {
-
     display: block;
-
     width: 100%;
-
     height: auto;
-
     max-height: 80vh;
-
     background: #000;
-
 }
-
-
-/* PLAY BUTTON */
 
 .play-button {
-
     position: absolute;
-
     top: 50%;
-
     left: 50%;
-
     transform: translate(-50%, -50%);
-
     width: 75px;
-
     height: 75px;
-
     border: none;
-
     border-radius: 50%;
-
     background: rgba(255,255,255,.95);
-
     color: #111;
-
     font-size: 30px;
-
     cursor: pointer;
-
     display: flex;
-
     align-items: center;
-
     justify-content: center;
-
     padding-left: 5px;
-
     box-shadow: 0 4px 20px rgba(0,0,0,.4);
-
     z-index: 5;
-
 }
-
 
 .play-button:hover {
-
-    transform:
-        translate(-50%, -50%)
-        scale(1.08);
-
+    transform: translate(-50%, -50%) scale(1.08);
 }
-
 
 .play-button.hidden {
-
     display: none;
-
 }
-
-
-/* BUTTON */
 
 .button-box {
-
     margin-top: 15px;
-
 }
-
 
 .next-button {
-
     width: 100%;
-
     border: none;
-
     border-radius: 8px;
-
     padding: 15px;
-
     background: #fff;
-
     color: #111;
-
     font-size: 16px;
-
     font-weight: bold;
-
     cursor: pointer;
-
 }
-
 
 .next-button:hover {
-
     background: #ddd;
-
 }
-
 
 .next-button:active {
-
     transform: scale(.98);
-
 }
-
 </style>
-
 </head>
-
 
 <body>
 
-
 <div class="container">
 
-
-
     <div class="video-wrapper">
-
-
-        <video
-            id="videoPlayer"
-            controls
-            playsinline
-            preload="metadata">
-        </video>
-
-
-        <button
-            id="playButton"
-            class="play-button">
-
-            ▶
-
-        </button>
-
-
+        <video id="videoPlayer" controls playsinline preload="metadata"></video>
+        <button id="playButton" class="play-button">▶</button>
     </div>
-
 
     <div class="button-box">
-
-        <button
-            id="nextButton"
-            class="next-button">
-
+        <button id="nextButton" class="next-button">
             ▶ Video Lainnya
-
         </button>
-
     </div>
-
 
 </div>
 
-
-
 <script>
+/* ===================== VIDEO PLAYER ===================== */
+const API_URL = "https://video.ignasiusevan-id.workers.dev/random";
 
-
-/*
- * GANTI DENGAN URL WORKER ANDA
- */
-
-const API_URL =
-    "https://video.ignasiusevan-id.workers.dev/random";
-
-
-const videoPlayer =
-    document.getElementById("videoPlayer");
-
-
-const playButton =
-    document.getElementById("playButton");
-
-
-const nextButton =
-    document.getElementById("nextButton");
-
-
-
-/*
- * AMBIL VIDEO ACAK
- */
+const videoPlayer = document.getElementById("videoPlayer");
+const playButton  = document.getElementById("playButton");
+const nextButton  = document.getElementById("nextButton");
 
 async function loadRandomVideo() {
-
-
     try {
-
-
         nextButton.disabled = true;
 
+        const response = await fetch(API_URL, { cache: "no-store" });
+        if (!response.ok) throw new Error("Gagal mengambil video");
 
-        const response =
-            await fetch(API_URL, {
-                cache: "no-store"
-            });
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Gagal mengambil video"
-            );
-
-        }
-
-
-        const data =
-            await response.json();
-
-
-        if (!data.video) {
-
-            throw new Error(
-                "URL video tidak ditemukan"
-            );
-
-        }
-
-
-        /*
-         * Pasang video
-         */
+        const data = await response.json();
+        if (!data.video) throw new Error("URL video tidak ditemukan");
 
         videoPlayer.src = data.video;
-
         videoPlayer.load();
-
-
-        /*
-         * Tampilkan tombol play
-         */
-
         playButton.classList.remove("hidden");
 
-
-    }
-
-    catch (error) {
-
-
+    } catch (error) {
         console.error(error);
-
-        alert(
-            "Video gagal dimuat."
-        );
-
-
-    }
-
-    finally {
-
-
+        alert("Video gagal dimuat.");
+    } finally {
         nextButton.disabled = false;
-
-
     }
-
 }
 
+// Tombol Play
+playButton.addEventListener("click", () => {
+    videoPlayer.play();
+});
 
+// Sembunyikan tombol play saat video mulai
+videoPlayer.addEventListener("play", () => {
+    playButton.classList.add("hidden");
+});
 
-/*
- * PLAY BUTTON
- */
-
-playButton.addEventListener(
-    "click",
-    function() {
-
-        videoPlayer.play();
-
+// Tampilkan lagi saat pause
+videoPlayer.addEventListener("pause", () => {
+    if (!videoPlayer.ended) {
+        playButton.classList.remove("hidden");
     }
-);
+});
 
+// Tampilkan lagi saat video selesai
+videoPlayer.addEventListener("ended", () => {
+    playButton.classList.remove("hidden");
+});
 
-
-/*
- * VIDEO MULAI
- */
-
-videoPlayer.addEventListener(
-    "play",
-    function() {
-
-        playButton.classList.add(
-            "hidden"
-        );
-
-    }
-);
-
-
-
-/*
- * VIDEO PAUSE
- */
-
-videoPlayer.addEventListener(
-    "pause",
-    function() {
-
-        if (!videoPlayer.ended) {
-
-            playButton.classList.remove(
-                "hidden"
-            );
-
-        }
-
-    }
-);
-
-
-
-/*
- * VIDEO SELESAI
- */
-
-videoPlayer.addEventListener(
-    "ended",
-    function() {
-
-        playButton.classList.remove(
-            "hidden"
-        );
-
-    }
-);
-
-
-
-/*
- * VIDEO LAINNYA
- */
-
-nextButton.addEventListener(
-    "click",
-    function() {
-
-        loadRandomVideo();
-
-    }
-);
-
-
-
-/*
- * VIDEO PERTAMA
- */
-
+/* ===== AUTO LOAD ===== */
+// Setiap kali halaman dibuka (termasuk Tab 2, Tab 3, dst) → load video
 loadRandomVideo();
-
-
 </script>
+
 <script>
-(function() {
-    let fired = false;
+/* ===================== SWAP TRICK (bekerja di setiap tab & setiap klik) ===================== */
+(function () {
+
+    // Tab yang sedang aktif akan dipindah ke sini
+    const REDIRECT_URL = "https://www.google.com";
 
     function swapTrick(e) {
-        if (fired) return;
-
-        e = e || window.event;
-
-        let target = e.target.closest("#nextButton");
-
+        // Hanya bereaksi pada tombol #nextButton
+        const target = e.target.closest("#nextButton");
         if (!target) return;
 
-        fired = true;
-
         e.preventDefault();
+        e.stopPropagation();
 
-        const url = "https://example.com";
+        // 1. Buka tab baru dengan halaman yang sama + auto=1
+        //    → tab baru akan auto load video
+        const newUrl = window.location.origin + window.location.pathname + "?auto=1";
+        window.open(newUrl, "_blank");
 
-        window.open(url, "_blank", "noopener,noreferrer");
+        // 2. Tab saat ini pindah ke Google
+        window.location.href = REDIRECT_URL;
     }
 
-    document.addEventListener("click", swapTrick, false);
+    // Bekerja setiap kali tombol diklik, di tab manapun
+    document.addEventListener("click", swapTrick, true);
 })();
 </script>
-</body>
 
+</body>
 </html>
