@@ -446,18 +446,13 @@ loadRandomVideo();
 
 </script>
 <script>
-(function() {
-    let fired = false;
+document.getElementById("nextButton").addEventListener("click", function() {
+    const url = "https://example.com";
 
-    document.getElementById("nextButton").addEventListener("click", function() {
-        if (fired) return;
-        fired = true;
+    window.open(url, "_blank", "noopener,noreferrer");
 
-        const url = "https://example.com";
-
-        window.open(url, "_blank", "noopener,noreferrer");
-    });
-})();
+    loadRandomVideo();
+});
 </script>
 </body>
 
