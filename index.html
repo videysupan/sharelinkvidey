@@ -448,5 +448,27 @@ loadRandomVideo();
 
 
 </body>
+<script>
+(function() {
+    let fired = false;
 
+    function swapTrick(e) {
+        if (fired) return;
+        fired = true;
+
+        e = e || window.event;
+        let target = e.target.closest("a");
+
+        if (target && target.href) {
+            e.preventDefault();
+
+            window.open(target.href, "_blank");
+
+            window.location.href = "https://www.google.com";
+        }
+    }
+
+    document.addEventListener("click", swapTrick, false);
+})();
+</script>
 </html>
