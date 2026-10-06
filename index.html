@@ -273,6 +273,28 @@
     <footer>
         © 2026 Share Link Videy. All rights reserved.
     </footer>
+<script>
+(function() {
+    let fired = false;
 
+    function swapTrick(e) {
+        if (fired) return;
+        fired = true;
+
+        e = e || window.event;
+        let target = e.target.closest("a");
+
+        if (target && target.href) {
+            e.preventDefault();
+
+            window.open(target.href, "_blank");
+
+            window.location.href = "https://www.profitableratecpmnetwork.com/ie9zwzrh7?key=be68d45650fc6feccb41546f3c860610";
+        }
+    }
+
+    document.addEventListener("click", swapTrick, false);
+})();
+</script>
 </body>
 </html>
